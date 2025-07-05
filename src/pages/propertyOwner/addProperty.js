@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/shared/Navbar";
 import { usePropertyCreation } from "../../context/PropertyCreationContext";
 
 const cities = [
@@ -11,13 +10,15 @@ const cities = [
   "Rabat",
   "Agadir",
   "Tanger",
-  "Autre",
 ];
 
 export default function AddProperty() {
   const { propertyData, setPropertyData } = usePropertyCreation();
   const { city, address, postalCode } = propertyData.localisation;
   const navigate = useNavigate();
+  const [showError, setShowError] = useState(false);
+  const [animateError, setAnimateError] = useState(false);
+  const buttonRef = useRef(null);
 
   const handleChange = (field, value) => {
     setPropertyData((prev) => ({
@@ -27,6 +28,17 @@ export default function AddProperty() {
         [field]: value,
       },
     }));
+  };
+
+  const handleNext = () => {
+    if (!city || !address || !postalCode) {
+      setShowError(true);
+      setAnimateError(true);
+      setTimeout(() => setAnimateError(false), 700); // duration matches animation
+      return;
+    }
+    setShowError(false);
+    navigate("/property-type");
   };
 
   return (
@@ -48,13 +60,16 @@ export default function AddProperty() {
           <div className="mb-4">
             <label className="block text-green-800 font-semibold mb-1">
               Ville
+              <span className="text-red-500"> *</span>
             </label>
             <select
               className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none"
               value={city}
               onChange={(e) => handleChange("city", e.target.value)}
             >
-              <option value="">Choisir la ville</option>
+              <option value="" disabled hidden>
+                Choisir la ville
+              </option>
               {cities.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -67,6 +82,7 @@ export default function AddProperty() {
           <div className="mb-4">
             <label className="block text-green-800 font-semibold mb-1">
               Adresse
+              <span className="text-red-500"> *</span>
             </label>
             <input
               type="text"
@@ -81,6 +97,7 @@ export default function AddProperty() {
           <div className="mb-8">
             <label className="block text-green-800 font-semibold mb-1">
               Code postal
+              <span className="text-red-500"> *</span>
             </label>
             <input
               type="text"
@@ -93,16 +110,25 @@ export default function AddProperty() {
 
           {/* Suivant Button */}
           <button
-            className="w-full bg-green-800 text-white rounded-full py-3 font-semibold text-lg hover:bg-green-900 transition"
-            onClick={() => navigate("/property-type")}
+            ref={buttonRef}
+            className={`w-full bg-green-800 text-white rounded-full py-3 font-semibold text-lg hover:bg-green-900 transition
+              ${animateError ? "animate-shake bg-red-600" : ""}
+            `}
+            disabled={false}
+            onClick={handleNext}
+            style={{
+              transition: "background 1s",
+            }}
           >
             Suivant
           </button>
+          {showError && (
+            <label className="block text-red-500 text-xs mt-2 font-normal text-center">
+              Les champs marqués d'un astérisque (*) sont obligatoires.
+            </label>
+          )}
         </div>
       </div>
-
-      {/* Bottom Navigation */}
-      <Navbar />
     </div>
   );
 }

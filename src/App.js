@@ -19,6 +19,7 @@ import PropertyPhotosStep from './pages/propertyOwner/PropertyPhotosStep';
 import PropertyTitleStep from './pages/propertyOwner/PropertyTitleStep'; 
 import PropertyDescriptionStep from './pages/propertyOwner/PropertyDescriptionStep';
 import PropertyPriceStep from './pages/propertyOwner/PropertyPriceStep';
+import PropertyDocumentsStep from './pages/propertyOwner/PropertyDocumentsStep'; 
 
 function App() {
   return (
@@ -45,7 +46,8 @@ function App() {
           <Route path="/property-title" element={<PropertyTitleStep />} />
           <Route path="/property-description" element={<PropertyDescriptionStep />} />
           <Route path="/property-price" element={<PropertyPriceStep />} />
-
+          <Route path="/property-documents" element={<PropertyDocumentsStep />} />
+          
           {/* Add other sections here as needed */}
         </Routes>
       </PropertyCreationProvider>

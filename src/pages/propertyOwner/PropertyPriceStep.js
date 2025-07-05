@@ -170,8 +170,7 @@ export default function PropertyPriceStep() {
             className="w-full bg-green-800 text-white rounded-full py-3 font-semibold text-lg hover:bg-green-900 transition"
             disabled={priceWeek <= 0 || priceWeekend <= 0}
             onClick={() => {
-              // Go to next step (replace with your next route)
-              alert("Next step! (implement navigation)");
+              navigate("/property-documents");
             }}
           >
             Suivant
