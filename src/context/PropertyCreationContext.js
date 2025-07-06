@@ -15,6 +15,7 @@ export function PropertyCreationProvider({ children }) {
       rooms: 2,
       beds: 3,
       baths: 2,
+      
     },
   });
 
