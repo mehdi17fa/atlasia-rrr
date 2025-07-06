@@ -33,7 +33,7 @@ const DestinationSearchScreens = ({ onBack, onDestinationSelected }) => {
             </svg>
           </button>
           <div className="flex ml-8 space-x-14">
-            <span className="text-green-600 font-medium border-b-2 border-green-600 pb-2">Destination</span>
+            <span className="text-green-800 font-medium border-b-2 border-green-800 pb-2">Destination</span>
             <span className="text-gray-400">Date</span>
             <span className="text-gray-400">Invités</span>
           </div>
@@ -42,7 +42,7 @@ const DestinationSearchScreens = ({ onBack, onDestinationSelected }) => {
         {/* Search Bar */}
         <div className="p-4">
           <div className="relative">
-            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -50,7 +50,7 @@ const DestinationSearchScreens = ({ onBack, onDestinationSelected }) => {
               placeholder="Rechercher votre destination"
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-700"
             />
           </div>
         </div>
@@ -73,8 +73,8 @@ const DestinationSearchScreens = ({ onBack, onDestinationSelected }) => {
                 }}
               >
                 <div className="mr-4">
-                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-6 h-6 bg-green-50 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>

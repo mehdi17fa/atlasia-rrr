@@ -61,7 +61,7 @@ const DateSelectionScreens = ({ selectedDestination, onBack }) => {
     if (!dateObj.isCurrentMonth) {
       className += "text-gray-300 ";
     } else if (isDateSelected(dateObj)) {
-      className += "bg-green-600 text-white font-medium ";
+      className += "bg-green-800 text-white font-medium ";
     } else {
       className += "text-gray-700 hover:bg-gray-100 ";
     }
@@ -104,7 +104,7 @@ const DateSelectionScreens = ({ selectedDestination, onBack }) => {
           </button>
           <div className="flex ml-8 space-x-14">
             <span className="text-gray-400">Destination</span>
-            <span className="text-green-600 font-medium border-b-2 border-green-600 pb-2">Date</span>
+            <span className="text-green-800 font-medium border-b-2 border-green-800 pb-2">Date</span>
             <span className="text-gray-400">Invités</span>
           </div>
         </div>
@@ -135,7 +135,7 @@ const DateSelectionScreens = ({ selectedDestination, onBack }) => {
 
         <div className="flex justify-center mb-4">
           <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
@@ -184,7 +184,7 @@ const DateSelectionScreens = ({ selectedDestination, onBack }) => {
           <button
             onClick={handleNext}
             disabled={!canProceed()}
-            className={`w-full py-3 rounded-full font-medium transition ${canProceed() ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+            className={`w-full py-3 rounded-full font-medium transition ${canProceed() ? 'bg-green-800 text-white hover:bg-green-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
           >
             Suivant
           </button>
