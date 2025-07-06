@@ -18,40 +18,49 @@ export default function LoginScreen() {
     } else {
       setError('');
       console.log('Login success with:', { email, password });
-      // navigate('/dashboard');
+      navigate('/'); // Navigate back to explore page after successful login
     }
   };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-white px-6 py-10"
-    >
+  const handleClose = () => {
+    navigate('/'); // Go back to previous page
+  };
 
+  return (
+    <>
+      {/* Dark overlay background */}
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={handleClose} />
+      
+      {/* Modal container */}
+      <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="flex flex-col items-center justify-start px-6 py-8">
             
             {/* Header */}
-            <div className="w-full mb-4">
+            <div className="w-full mb-4 relative">
               <button
-                onClick={() => navigate(-1)}
-                className="text-2xl hover:opacity-70 absolute top-10 left-6"
+                onClick={handleClose}
+                className="text-2xl hover:opacity-70 absolute -top-2 -right-2 text-gray-600"
               >
                 ✕
               </button>
-              <h1 className="text-3xl font-bold text-black text-center">
+              <h1 className="text-2xl font-bold text-black text-center">
                 Log In
               </h1>
             </div>
 
-             {/* ✅ Full width step bar */}
-            <div className="h-1 w-full bg-green-800 relative">
+            {/* Progress bar */}
+            <div className="h-1 w-full bg-green-800 relative mb-6">
               <div className="absolute top-0 left-0 h-1 bg-green-800" />
             </div>
 
             {/* Welcome Text */}
-            <h2 className="text-4xl font-bold text-green-800 text-center mt-8 mb-10">
-              Welcome back !
+            <h2 className="text-3xl font-bold text-green-800 text-center mb-8">
+              Welcome back!
             </h2>
 
-            {/* Inputs - styled like SignUpScreen */}
-            <div className="w-full max-w-md space-y-4 border border-gray-300 rounded-xl p-4">
+            {/* Inputs */}
+            <div className="w-full space-y-4 border border-gray-300 rounded-xl p-4 mb-4">
               <input
                 type="email"
                 placeholder="Email address"
@@ -70,14 +79,14 @@ export default function LoginScreen() {
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 text-red-500 text-sm flex items-center">
+              <div className="mb-4 text-red-500 text-sm flex items-center">
                 <span className="mr-2">✗</span>
                 <span>{error}</span>
               </div>
             )}
 
             {/* Forgot Password Button */}
-            <div className="w-full flex justify-center mt-4">
+            <div className="w-full flex justify-center mb-6">
               <button
                 onClick={() => navigate('/password-recovery')}
                 className="text-sm text-green-700 hover:text-green-800 transition"
@@ -86,17 +95,16 @@ export default function LoginScreen() {
               </button>
             </div>
 
-
             {/* Login Button */}
             <button
               onClick={handleLogin}
-              className="mt-6 bg-green-800 hover:bg-green-700 text-white text-lg font-semibold rounded-full py-3 px-8 w-full max-w-xs transition"
+              className="bg-green-800 hover:bg-green-700 text-white text-lg font-semibold rounded-full py-3 px-8 w-full transition mb-6"
             >
               Log In
             </button>
 
             {/* Sign Up Link */}
-            <p className="text-sm text-gray-600 mt-8 text-center md:text-left">
+            <p className="text-sm text-gray-600 text-center">
               No account?{' '}
               <button
                 onClick={() => navigate('/signup')}
@@ -106,6 +114,8 @@ export default function LoginScreen() {
               </button>
             </p>
           </div>
-
+        </div>
+      </div>
+    </>
   );
 }

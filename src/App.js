@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PropertyCreationProvider } from "./context/PropertyCreationContext";
 
-import WelcomeScreen from './pages/WelcomeScreen';
+
 import SignUpScreen from './pages/SignUp/SignUpScreen';
 import IdentificationScreen from './pages/SignUp/IdentificationScreen';
 import ProfileSignupScreen from './pages/SignUp/CompleteProfileScreen';

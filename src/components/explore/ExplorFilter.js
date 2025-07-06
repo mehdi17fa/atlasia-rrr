@@ -1,5 +1,6 @@
 // components/explore/ExploreFilter.js
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // Import custom SVGs
 import { ReactComponent as LogementIcon } from '../../assets/icons/logement.svg';
@@ -8,22 +9,34 @@ import { ReactComponent as ActiviteIcon } from '../../assets/icons/activite.svg'
 import { ReactComponent as PacksIcon } from '../../assets/icons/pack.svg';
 
 const categories = [
-  { label: 'Logement', icon: LogementIcon },
-  { label: 'Restauration', icon: RestaurationIcon },
-  { label: 'Activités', icon: ActiviteIcon },
-  { label: 'Packs et services', icon: PacksIcon },
+  { label: 'Logement', icon: LogementIcon, path: '/' }, // ← ici
+  { label: 'Restauration', icon: RestaurationIcon, path: '/restauration' },
+  { label: 'Activités', icon: ActiviteIcon, path: '/activites' },
+  { label: 'Packs et services', icon: PacksIcon, path: '/packs' },
 ];
 
+
 export default function ExploreFilter() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <div className="flex justify-around border-b border-gray-200 py-2 bg-white">
       {categories.map((cat, i) => {
         const Icon = cat.icon;
+        const isActive = location.pathname === cat.path;
+
         return (
-          <div key={i} className="flex flex-col items-center text-green-800 text-xs">
-            <Icon className="w-6 h-6 mb-1" />
+          <button
+            key={i}
+            onClick={() => navigate(cat.path)}
+            className={`flex flex-col items-center text-xs transition ${
+              isActive ? 'text-green-800 font-semibold' : 'text-gray-500'
+            }`}
+          >
+            <Icon className={`w-6 h-6 mb-1 ${isActive ? 'text-green-800' : 'text-gray-500'}`} />
             {cat.label}
-          </div>
+          </button>
         );
       })}
     </div>

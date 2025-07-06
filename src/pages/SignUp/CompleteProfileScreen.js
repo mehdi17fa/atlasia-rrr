@@ -70,7 +70,7 @@ const ProfileSignupScreen = () => {
         phoneNumber: selectedCountry.code + phoneNumber,
         country: selectedCountry,
       });
-      alert('Profile created successfully!');
+      navigate('/');
     }
   };
 
@@ -196,7 +196,8 @@ const ProfileSignupScreen = () => {
       </div>
 
       {/* Finish Button */}
-      <div className="fixed bottom-6 left-0 right-0 flex justify-center">
+      <div className="fixed bottom-24 md:bottom-6 left-0 right-0 flex justify-center mb-16">
+
         <button
           onClick={handleFinish}
           disabled={!isFormValid}
