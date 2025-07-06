@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PropertyCreationProvider } from "./context/PropertyCreationContext";
 
-
+import WelcomeScreen from './pages/WelcomeScreen';
 import SignUpScreen from './pages/SignUp/SignUpScreen';
 import IdentificationScreen from './pages/SignUp/IdentificationScreen';
 import ProfileSignupScreen from './pages/SignUp/CompleteProfileScreen';
@@ -27,7 +27,7 @@ function App() {
       <PropertyCreationProvider>
         <Routes>
           {/* General routes */}
-          {/* <Route path="/" element={<WelcomeScreen />} />
+          <Route path="/" element={<WelcomeScreen />} />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/signup" element={<SignUpScreen />} />
           <Route path="/signup-confirmation" element={<SignupScreenConf />} />
@@ -35,10 +35,10 @@ function App() {
           <Route path="/complete-profile" element={<ProfileSignupScreen />} />
           <Route path="/password-recovery" element={<PasswordRecoveryScreen />} />
           <Route path="/password-recovery-confirmation" element={<PasswordRecoveryConfirmation />} />
-          <Route path="/explore" element={<Explore />} /> */}
+          <Route path="/explore" element={<Explore />} />
 
           {/* Property owner routes */}
-          <Route path="/" element={<AddProperty />} />
+          <Route path="/add-property" element={<AddProperty />} />
           <Route path="/property-type" element={<PropertyTypeStep />} />
           <Route path="/property-info" element={<PropertyInfoStep />} />
           <Route path="/property-equipments" element={<PropertyEquipmentsStep />} />
@@ -48,7 +48,6 @@ function App() {
           <Route path="/property-price" element={<PropertyPriceStep />} />
           <Route path="/property-documents" element={<PropertyDocumentsStep />} />
           
-          {/* Add other sections here as needed */}
         </Routes>
       </PropertyCreationProvider>
     
