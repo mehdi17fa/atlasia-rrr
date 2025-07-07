@@ -5,7 +5,8 @@ export default function IdentificationModal({ onClose }) {
   const navigate = useNavigate();
 
   const handleProfileSelect = (profileType) => {
-    navigate(`/complete-profile?type=${profileType}`);
+    localStorage.setItem("profileType", profileType); // Save choice
+    navigate(`/complete-profile?type=${profileType}`); 
   };
 
   const handleClose = () => {

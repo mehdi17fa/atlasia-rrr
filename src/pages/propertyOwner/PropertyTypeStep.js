@@ -89,7 +89,7 @@ export default function PropertyTypeStep() {
             })}
           </div>
           <button
-            className="w-full bg-green-800 text-white rounded-full py-[7px] font-semibold text-lg hover:bg-green-900 transition text-left pl-6"
+            className="w-full bg-green-800 text-white rounded-full py-3 font-semibold text-lg hover:bg-green-900"
             disabled={selected === null}
             onClick={() => {
               navigate("/property-info");
