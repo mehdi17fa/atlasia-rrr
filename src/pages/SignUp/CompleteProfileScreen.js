@@ -12,6 +12,7 @@ const ProfileSignupScreen = () => {
     name: 'Morocco',
   });
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [profileType, setProfileType] = useState(''); // New state for profile type
 
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -63,6 +64,8 @@ const ProfileSignupScreen = () => {
   const isFormValid = fullName.trim() !== '' && phoneNumber.length === 10;
 
   const handleFinish = () => {
+    const profileType = new URLSearchParams(window.location.search).get("type") || localStorage.getItem("profileType");
+
     if (isFormValid) {
       console.log({
         profileImage,
@@ -70,7 +73,11 @@ const ProfileSignupScreen = () => {
         phoneNumber: selectedCountry.code + phoneNumber,
         country: selectedCountry,
       });
-      navigate('/');
+      if (profileType === "owner") {
+        navigate("/owner-welcome");
+      } else {
+        navigate('/');
+      }
     }
   };
 

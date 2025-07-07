@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { PropertyCreationProvider } from "./context/PropertyCreationContext";
 
 import WelcomeScreen from './pages/WelcomeScreen';
@@ -11,6 +11,7 @@ import LoginScreen from './pages/LogIn/LogInScreen';
 import PasswordRecoveryScreen from './pages/LogIn/PasswordRecoveryScreen';
 import PasswordRecoveryConfirmation from './pages/LogIn/PasswordRecoveryConfirmation';
 import Explore from './pages/Explore/Explore';
+import WelcomeOwner from './pages/propertyOwner/WelcomeOwner';
 import AddProperty from './pages/propertyOwner/addProperty';
 import PropertyTypeStep from './pages/propertyOwner/PropertyTypeStep';
 import PropertyInfoStep from './pages/propertyOwner/PropertyInfoStep';
@@ -20,6 +21,20 @@ import PropertyTitleStep from './pages/propertyOwner/PropertyTitleStep';
 import PropertyDescriptionStep from './pages/propertyOwner/PropertyDescriptionStep';
 import PropertyPriceStep from './pages/propertyOwner/PropertyPriceStep';
 import PropertyDocumentsStep from './pages/propertyOwner/PropertyDocumentsStep'; 
+
+function AppRedirector() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // const profileType = localStorage.getItem("profileType");
+    // if (profileType === "owner") {
+    //   navigate("/owner-welcome"); // Adjust path as needed
+    // }
+    // 
+  }, [navigate]);
+
+  return null;
+}
 
 function App() {
   return (
@@ -38,6 +53,7 @@ function App() {
           <Route path="/explore" element={<Explore />} />
 
           {/* Property owner routes */}
+          <Route path="/owner-welcome" element={<WelcomeOwner />} />
           <Route path="/add-property" element={<AddProperty />} />
           <Route path="/property-type" element={<PropertyTypeStep />} />
           <Route path="/property-info" element={<PropertyInfoStep />} />
@@ -49,6 +65,7 @@ function App() {
           <Route path="/property-documents" element={<PropertyDocumentsStep />} />
           
         </Routes>
+        <AppRedirector />
       </PropertyCreationProvider>
     
   );
