@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePropertyCreation } from "../../context/PropertyCreationContext";
+import NavigationButton from "../../components/shared/NavigationButtons";
 
 const cities = [
   "Ifrane",
@@ -14,7 +15,7 @@ const cities = [
 
 export default function AddProperty() {
   const { propertyData, setPropertyData } = usePropertyCreation();
-  const { city, address, postalCode } = propertyData.localisation;
+  const { city, address, postalCode } = propertyData.localisation || {};
   const navigate = useNavigate();
   const [showError, setShowError] = useState(false);
   const [animateError, setAnimateError] = useState(false);
@@ -24,7 +25,7 @@ export default function AddProperty() {
     setPropertyData((prev) => ({
       ...prev,
       localisation: {
-        ...prev.localisation,
+        ...(prev.localisation || { city: "", address: "", postalCode: "" }),
         [field]: value,
       },
     }));
@@ -128,6 +129,12 @@ export default function AddProperty() {
             </label>
           )}
         </div>
+        <NavigationButton
+  left="Retour"
+  right="Accueil"
+  to="/home"
+  active={false}
+/>
       </div>
     </div>
   );

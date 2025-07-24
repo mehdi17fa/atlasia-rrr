@@ -119,7 +119,7 @@ function App() {
   });
 
   return (
-    <Router>
+    // <Router>
       <PropertyCreationProvider>
         <Routes>
           {/* Explore layout */}
@@ -171,7 +171,7 @@ function App() {
         <AppRedirector />
         <ConditionalNavbar />
       </PropertyCreationProvider>
-    </Router>
+    // </Router>
   );
 }
 
