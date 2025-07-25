@@ -2,9 +2,28 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { usePropertyCreation } from "../../context/PropertyCreationContext";
 
+import NavigationButton from "../../components/shared/NavigationButtons";
+
+const stepOrder = [
+  { key: "localisation", label: "Localisation", to: "/property-localisation" },
+  { key: "propertyType", label: "Type de propriété", to: "/property-type" },
+  { key: "info", label: "Informations", to: "/property-info" },
+  { key: "equipments", label: "Equipements", to: "/property-equipments" },
+  { key: "photos", label: "Photos", to: "/property-photos" },
+  { key: "title", label: "Titre", to: "/property-title" },
+  { key: "description", label: "Description", to: "/property-description" },
+  { key: "price", label: "Prix", to: "/property-price" },
+  { key: "documents", label: "Documents légaux", to: "/property-documents" },
+];
+
 export default function PropertyDescriptionStep() {
   const navigate = useNavigate();
   const { propertyData, setPropertyData } = usePropertyCreation();
+
+  const currentStepKey = "description";
+  const currentStepIndex = stepOrder.findIndex((step) => step.key === currentStepKey);
+  const stepsBefore = stepOrder.slice(0, currentStepIndex);
+  const stepsAfter = stepOrder.slice(currentStepIndex + 1);
 
   // Ensure description is always a string
   const description = propertyData.description || "";
@@ -18,56 +37,21 @@ export default function PropertyDescriptionStep() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col pb-24">
-      {/* Progress bar */}
+      {/* Completed steps before current */}
       <div className="w-full max-w-md mx-auto px-4 pt-4">
-        <button
-          type="button"
-          className="w-full rounded-xl border border-[#a084e8] bg-white px-4 py-2.5 mb-2 flex items-center justify-between transition hover:bg-gray-50 focus:outline-none"
-          onClick={() => navigate("/")}
-        >
-          <span className="font-semibold text-lg text-gray-800">Localisation</span>
-          <span className="text-green-800 text-2xl">&#10003;</span>
-        </button>
-        <button
-          type="button"
-          className="w-full rounded-xl border border-[#a084e8] bg-white px-4 py-2.5 mb-2 flex items-center justify-between transition hover:bg-gray-50 focus:outline-none"
-          onClick={() => navigate("/property-type")}
-        >
-          <span className="font-semibold text-lg text-gray-800">Type de propriété</span>
-          <span className="text-green-800 text-2xl">&#10003;</span>
-        </button>
-        <button
-          type="button"
-          className="w-full rounded-xl border border-[#a084e8] bg-white px-4 py-2.5 mb-2 flex items-center justify-between transition hover:bg-gray-50 focus:outline-none"
-          onClick={() => navigate("/property-info")}
-        >
-          <span className="font-semibold text-lg text-gray-800">Information</span>
-          <span className="text-green-800 text-2xl">&#10003;</span>
-        </button>
-        <button
-          type="button"
-          className="w-full rounded-xl border border-[#a084e8] bg-white px-4 py-2.5 mb-2 flex items-center justify-between transition hover:bg-gray-50 focus:outline-none"
-          onClick={() => navigate("/property-equipments")}
-        >
-          <span className="font-semibold text-lg text-gray-800">Equipements</span>
-          <span className="text-green-800 text-2xl">&#10003;</span>
-        </button>
-        <button
-          type="button"
-          className="w-full rounded-xl border border-[#a084e8] bg-white px-4 py-2.5 mb-2 flex items-center justify-between transition hover:bg-gray-50 focus:outline-none"
-          onClick={() => navigate("/property-photos")}
-        >
-          <span className="font-semibold text-lg text-gray-800">Photos</span>
-          <span className="text-green-800 text-2xl">&#10003;</span>
-        </button>
-        <button
-          type="button"
-          className="w-full rounded-xl border border-[#a084e8] bg-white px-4 py-2.5 mb-4 flex items-center justify-between transition hover:bg-gray-50 focus:outline-none"
-          onClick={() => navigate("/property-title")}
-        >
-          <span className="font-semibold text-lg text-gray-800">Titre</span>
-          <span className="text-green-800 text-2xl">&#10003;</span>
-        </button>
+        <div className="mb-4">
+          {stepsBefore.map((step) =>
+            propertyData.stepsCompleted?.[step.key] ? (
+              <NavigationButton
+                key={step.key}
+                left={step.label}
+                right="✓"
+                to={step.to}
+                active={false}
+              />
+            ) : null
+          )}
+        </div>
       </div>
       {/* Step 7 */}
       <div className="w-full max-w-md mx-auto px-4">
@@ -88,11 +72,32 @@ export default function PropertyDescriptionStep() {
             className="w-full bg-green-800 text-white rounded-full py-3 font-semibold text-lg hover:bg-green-900 transition"
             disabled={description.length === 0}
             onClick={() => {
+              setPropertyData((prev) => ({
+                ...prev,
+                stepsCompleted: {
+                  ...prev.stepsCompleted,
+                  description: true, // Mark this step as completed
+                },
+              }));
               navigate("/property-price");
             }}
           >
             Suivant
           </button>
+        </div>
+        {/* Completed steps after current */}
+        <div className="mt-4 flex flex-col gap-2">
+          {stepsAfter.map((step) =>
+            propertyData.stepsCompleted?.[step.key] ? (
+              <NavigationButton
+                key={step.key}
+                left={step.label}
+                right="✓"
+                to={step.to}
+                active={false}
+              />
+            ) : null
+          )}
         </div>
       </div>
     </div>

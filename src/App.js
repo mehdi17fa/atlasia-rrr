@@ -157,7 +157,7 @@ function App() {
 
           {/* Property owner flow */}
           <Route path="/owner-welcome" element={<WelcomeOwner />} />
-          <Route path="/add-property" element={<AddProperty />} />
+          <Route path="/property-localisation" element={<AddProperty />} />
           <Route path="/property-type" element={<PropertyTypeStep />} />
           <Route path="/property-info" element={<PropertyInfoStep />} />
           <Route path="/property-equipments" element={<PropertyEquipmentsStep />} />

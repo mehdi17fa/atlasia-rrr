@@ -18,8 +18,8 @@ export default function NavigationButton({ left, right, to, active }) {
       `}
       onClick={to ? () => navigate(to) : undefined}
     >
-      <span className="text-gray-500 font-medium">{left}</span>
-      <span className="text-black font-semibold">{right}</span>
+      <span className="text-black font-semibold">{left}</span>
+      <span className="text-gray-500 font-medium">{right}</span>
     </div>
   );
 }

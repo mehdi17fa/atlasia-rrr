@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePropertyCreation } from "../../context/PropertyCreationContext";
 
+import NavigationButton from "../../components/shared/NavigationButtons";
 // Import icons for both active (green) and inactive (black) states
 import { ReactComponent as AppartementIconBlack } from "../../assets/icons/Properties/appartementBlack.svg";
 import { ReactComponent as AppartementIconGreen } from "../../assets/icons/Properties/appartementGreen.svg";
@@ -36,10 +37,25 @@ const propertyTypes = [
   },
 ];
 
+const stepOrder = [
+  { key: "localisation", label: "Localisation", to: "/property-localisation" },
+  { key: "propertyType", label: "Type de propriété", to: "/property-type" },
+  { key: "info", label: "Informations", to: "/property-info" },
+  { key: "equipments", label: "Equipements", to: "/property-equipments" },
+  { key: "photos", label: "Photos", to: "/property-photos" },
+  { key: "title", label: "Titre", to: "/property-title" },
+  { key: "description", label: "Description", to: "/property-description" },
+  { key: "price", label: "Prix", to: "/property-price" },
+  { key: "documents", label: "Documents légaux", to: "/property-documents" },
+];
+
 export default function PropertyTypeStep() {
   const { propertyData, setPropertyData } = usePropertyCreation();
   const navigate = useNavigate();
   const selected = propertyTypes.findIndex((t) => t.label === propertyData.propertyType);
+  const currentStepKey = "propertyType";
+  const currentStepIndex = stepOrder.findIndex((step) => step.key === currentStepKey);
+  const stepsAfter = stepOrder.slice(currentStepIndex + 1);
 
   const handleSelect = (idx) => {
     setPropertyData((prev) => ({
@@ -50,17 +66,22 @@ export default function PropertyTypeStep() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col pb-24">
-      {/* Localisation rectangle top bar */}
+      {/* Progress bar */}
       <div className="w-full max-w-md mx-auto px-4 pt-4">
-        <div
-          className="flex items-center rounded-xl border border-[#a084e8] bg-white px-4 py-2.5 mb-4 cursor-pointer shadow-sm transition hover:bg-gray-50"
-          onClick={() => navigate("/")}
-        >
-          <span className="font-semibold text-lg text-gray-800 text-left flex-1">Localisation</span>
-          <span className="text-green-800 text-2xl">&#10003;</span>
+        <div className="mb-4">
+          {stepOrder.slice(0, currentStepIndex).map((step) =>
+            propertyData.stepsCompleted[step.key] ? (
+              <NavigationButton
+                key={step.key}
+                left={step.label}
+                right="✓"
+                to={step.to}
+                active={false}
+              />
+            ) : null
+          )}
         </div>
       </div>
-
       {/* Step 2 */}
       <div className="w-full max-w-md mx-auto mt-4 px-4">
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 pt-4">
@@ -92,11 +113,32 @@ export default function PropertyTypeStep() {
             className="w-full bg-green-800 text-white rounded-full py-3 font-semibold text-lg hover:bg-green-900"
             disabled={selected === null}
             onClick={() => {
+              setPropertyData((prev) => ({
+                ...prev,
+                stepsCompleted: {
+                  ...prev.stepsCompleted,
+                  propertyType: true,
+                },
+              }));
               navigate("/property-info");
             }}
           >
             Suivant
           </button>
+        </div>
+        {/* Move completed steps after current OUTSIDE the card */}
+        <div className="mt-4 flex flex-col gap-2">
+          {stepsAfter.map((step) =>
+            propertyData.stepsCompleted[step.key] ? (
+              <NavigationButton
+                key={step.key}
+                left={step.label}
+                right="✓"
+                to={step.to}
+                active={false}
+              />
+            ) : null
+          )}
         </div>
       </div>
     </div>

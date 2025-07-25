@@ -13,6 +13,18 @@ const cities = [
   "Tanger",
 ];
 
+const stepOrder = [
+  { key: "localisation", label: "Localisation", to: "/property-localisation" },
+  { key: "propertyType", label: "Type de propriété", to: "/property-type" },
+  { key: "info", label: "Informations", to: "/property-info" },
+  { key: "equipments", label: "Equipements", to: "/property-equipments" },
+  { key: "photos", label: "Photos", to: "/property-photos" },
+  { key: "title", label: "Titre", to: "/property-title" },
+  { key: "description", label: "Description", to: "/property-description" },
+  { key: "price", label: "Prix", to: "/property-price" },
+  { key: "documents", label: "Documents légaux", to: "/property-documents" },
+];
+
 export default function AddProperty() {
   const { propertyData, setPropertyData } = usePropertyCreation();
   const { city, address, postalCode } = propertyData.localisation || {};
@@ -39,17 +51,44 @@ export default function AddProperty() {
       return;
     }
     setShowError(false);
+    setPropertyData((prev) => ({
+      ...prev,
+      stepsCompleted: {
+        ...prev.stepsCompleted,
+        localisation: true, // Mark this step as completed
+      },
+    }));
     navigate("/property-type");
   };
 
+  const currentStepKey = "localisation";
+  const currentStepIndex = stepOrder.findIndex(
+    (step) => step.key === currentStepKey
+  );
+  const stepsAfter = stepOrder.slice(currentStepIndex + 1);
+
   return (
     <div className="min-h-screen bg-white flex flex-col pb-24">
-      {/* Header */}
+      {/* Progress bar */}
       <div className="w-full max-w-md mx-auto mt-6 mb-2 px-4">
         <h1 className="text-green-800 text-2xl font-bold text-center mb-2">
           Atlasia
         </h1>
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 pt-4">
+          <div className="mb-4">
+            {stepOrder.slice(0, currentStepIndex).map((step) =>
+              propertyData.stepsCompleted[step.key] ? (
+                <NavigationButton
+                  key={step.key}
+                  left={step.label}
+                  right="✓"
+                  to={step.to}
+                  active={false}
+                />
+              ) : null
+            )}
+            {/* Remove current step button here */}
+          </div>
           <h2 className="text-green-800 text-lg font-bold text-center mb-1">
             Etape 1:
           </h2>
@@ -129,12 +168,20 @@ export default function AddProperty() {
             </label>
           )}
         </div>
-        <NavigationButton
-  left="Retour"
-  right="Accueil"
-  to="/home"
-  active={false}
-/>
+        {/* Completed steps after current, below Suivant */}
+        <div className="mt-4 flex flex-col gap-2">
+          {stepsAfter.map((step) =>
+            propertyData.stepsCompleted[step.key] ? (
+              <NavigationButton
+                key={step.key}
+                left={step.label}
+                right="✓"
+                to={step.to}
+                active={false}
+              />
+            ) : null
+          )}
+        </div>
       </div>
     </div>
   );

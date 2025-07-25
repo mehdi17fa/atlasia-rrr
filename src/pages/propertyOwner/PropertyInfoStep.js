@@ -36,6 +36,20 @@ const infoTypes = [
   },
 ];
 
+const stepOrder = [
+  { key: "localisation", label: "Localisation", to: "/property-localisation" },
+  { key: "propertyType", label: "Type de propriété", to: "/property-type" },
+  { key: "info", label: "Informations", to: "/property-info" },
+  { key: "equipments", label: "Equipements", to: "/property-equipments" },
+  { key: "photos", label: "Photos", to: "/property-photos" },
+  { key: "title", label: "Titre", to: "/property-title" },
+  { key: "description", label: "Description", to: "/property-description" },
+  { key: "price", label: "Prix", to: "/property-price" },
+  { key: "documents", label: "Documents légaux", to: "/property-documents" },
+];
+
+const currentStepKey = "info";
+
 export default function PropertyInfoStep() {
   const navigate = useNavigate();
   const { propertyData, setPropertyData } = usePropertyCreation();
@@ -54,56 +68,27 @@ export default function PropertyInfoStep() {
 
   const stepsCompleted = propertyData.stepsCompleted;
 
+  const currentStepIndex = stepOrder.findIndex(
+    (step) => step.key === currentStepKey
+  );
+  const stepsAfter = stepOrder.slice(currentStepIndex + 1);
+
   return (
     <div className="min-h-screen bg-white flex flex-col pb-24">
       {/* Progress bar */}
       <div className="w-full max-w-md mx-auto px-4 pt-4">
-        <NavigationButton
-          label="Localisation"
-          to="/property-localisation"
-          completed={stepsCompleted.localisation}
-        />
-        <NavigationButton
-          label="Type de propriété"
-          to="/property-type"
-          completed={stepsCompleted.propertyType}
-        />
-        <NavigationButton
-          label="Informations"
-          to="/property-info"
-          completed={stepsCompleted.localisation}
-        />
-        <NavigationButton
-          label="Equipments"
-          to="/property-equipments"
-          completed={stepsCompleted.propertyType}
-        />
-        <NavigationButton
-          label="Photos"
-          to="/property-photos"
-          completed={stepsCompleted.localisation}
-        />
-        <NavigationButton
-          label="Titre"
-          to="/property-title"
-          completed={stepsCompleted.propertyType}
-        />
-        <NavigationButton
-          label="Description"
-          to="/property-description"
-          completed={stepsCompleted.localisation}
-        />
-        <NavigationButton
-          label="Prix"
-          to="/property-price"
-          completed={stepsCompleted.propertyType}
-        />
-        <NavigationButton
-          label="Documents légaux"
-          to="/property-documents"
-          completed={stepsCompleted.localisation}
-        />
-
+        {stepOrder.slice(0, currentStepIndex).map((step) =>
+          stepsCompleted[step.key] ? (
+            <NavigationButton
+              key={step.key}
+              left={step.label}
+              right="✓"
+              to={step.to}
+              active={false}
+            />
+          ) : null
+        )}
+        {/* Do NOT render current step button */}
       </div>
       {/* Step 3 */}
       <div className="w-full max-w-md mx-auto px-4">
@@ -145,20 +130,32 @@ export default function PropertyInfoStep() {
           <button
             className="w-full bg-green-800 text-white rounded-full py-3 font-semibold text-lg hover:bg-green-900 transition"
             onClick={() => {
-              // Go to next step (replace with your next route)
+              setPropertyData((prev) => ({
+                ...prev,
+                stepsCompleted: {
+                  ...prev.stepsCompleted,
+                  info: true, // Mark this step as completed
+                },
+              }));
               navigate("/property-equipments");
             }}
           >
             Suivant
           </button>
         </div>
-        <div className="w-full max-w-md mx-auto pt-4">
-
-      <NavigationButton
-          label="Equipements"
-          to="/property-equipments"
-          completed={stepsCompleted.equipments}
-        />
+        {/* Completed steps after current, below Suivant */}
+        <div className="mt-4 flex flex-col gap-2">
+          {stepsAfter.map((step) =>
+            stepsCompleted[step.key] ? (
+              <NavigationButton
+                key={step.key}
+                left={step.label}
+                right="✓"
+                to={step.to}
+                active={false}
+              />
+            ) : null
+          )}
         </div>
       </div>
     </div>

@@ -13,6 +13,11 @@ export function PropertyCreationProvider({ children }) {
       propertyType: false,
       info: false,
       equipments: false,
+      photos: false,
+      title: false,
+      description: false,
+      price: false,
+      documents: false,
     },
   });
 
