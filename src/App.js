@@ -29,6 +29,7 @@ import PropertyTitleStep from './pages/propertyOwner/PropertyTitleStep';
 import PropertyDescriptionStep from './pages/propertyOwner/PropertyDescriptionStep';
 import PropertyPriceStep from './pages/propertyOwner/PropertyPriceStep';
 import PropertyDocumentsStep from './pages/propertyOwner/PropertyDocumentsStep';
+import MyProperties from './pages/propertyOwner/MyProperties';
 
 // Intermédiaire
 import HomeIntermédiaire from './pages/Intermediate/Acceuil';
@@ -166,6 +167,7 @@ function App() {
           <Route path="/property-description" element={<PropertyDescriptionStep />} />
           <Route path="/property-price" element={<PropertyPriceStep />} />
           <Route path="/property-documents" element={<PropertyDocumentsStep />} />
+          <Route path="/my-properties" element={<MyProperties />} />
         </Routes>
 
         <AppRedirector />

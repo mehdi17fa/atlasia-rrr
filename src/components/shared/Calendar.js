@@ -23,12 +23,18 @@ function getFirstDayOfWeek(year, month) {
  */
 export default function Calendar({ value, onChange, mode = "single" }) {
   const today = new Date();
-  const [currentMonth, setCurrentMonth] = useState(
-    Array.isArray(value) && value[0] ? value[0].getMonth() : value?.getMonth() ?? today.getMonth()
-  );
-  const [currentYear, setCurrentYear] = useState(
-    Array.isArray(value) && value[0] ? value[0].getFullYear() : value?.getFullYear() ?? today.getFullYear()
-  );
+  // Defensive: ensure value is a valid Date or [Date, Date|null]
+  let initialMonth, initialYear;
+  if (mode === "single") {
+    initialMonth = value instanceof Date ? value.getMonth() : today.getMonth();
+    initialYear = value instanceof Date ? value.getFullYear() : today.getFullYear();
+  } else {
+    const arr = Array.isArray(value) ? value : [null, null];
+    initialMonth = arr[0] instanceof Date ? arr[0].getMonth() : today.getMonth();
+    initialYear = arr[0] instanceof Date ? arr[0].getFullYear() : today.getFullYear();
+  }
+  const [currentMonth, setCurrentMonth] = useState(initialMonth);
+  const [currentYear, setCurrentYear] = useState(initialYear);
   const [viewMode, setViewMode] = useState("day"); // "day" | "month" | "year"
   const [rangeSelecting, setRangeSelecting] = useState(false);
 
@@ -120,6 +126,15 @@ export default function Calendar({ value, onChange, mode = "single" }) {
     ? value instanceof Date ? value : null
     : Array.isArray(value) ? value : [null, null];
 
+  function isSameDay(d1, d2) {
+    return (
+      d1 && d2 &&
+      d1.getDate() === d2.getDate() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getFullYear() === d2.getFullYear()
+    );
+  }
+
   function isInRange(day) {
     if (isSingle || !selectedDate[0] || !selectedDate[1]) return false;
     const d = new Date(currentYear, currentMonth, day);
@@ -150,22 +165,41 @@ export default function Calendar({ value, onChange, mode = "single" }) {
     const date = new Date(currentYear, currentMonth, day);
 
     if (isSingle) {
-      onChange && onChange(date);
+      if (selectedDate && isSameDay(selectedDate, date)) {
+        // Deselect if already selected
+        onChange && onChange(null);
+      } else {
+        onChange && onChange(date);
+      }
     } else {
       // Range selection logic
-      if (!selectedDate[0] || (selectedDate[0] && selectedDate[1])) {
+      if (!selectedDate[0] && !selectedDate[1]) {
         // Start new range
         onChange && onChange([date, null]);
         setRangeSelecting(true);
       } else if (selectedDate[0] && !selectedDate[1]) {
-        // Set end date
-        if (date < selectedDate[0]) {
+        if (isSameDay(selectedDate[0], date)) {
+          // Deselect start
+          onChange && onChange([null, null]);
+          setRangeSelecting(false);
+        } else if (date < selectedDate[0]) {
           // If end before start, swap
           onChange && onChange([date, selectedDate[0]]);
+          setRangeSelecting(false);
         } else {
           onChange && onChange([selectedDate[0], date]);
+          setRangeSelecting(false);
         }
-        setRangeSelecting(false);
+      } else if (selectedDate[0] && selectedDate[1]) {
+        // If both are set, check if clicking on start or end to deselect
+        if (isSameDay(selectedDate[0], date) || isSameDay(selectedDate[1], date)) {
+          onChange && onChange([null, null]);
+          setRangeSelecting(false);
+        } else {
+          // Start new range
+          onChange && onChange([date, null]);
+          setRangeSelecting(true);
+        }
       }
     }
   };
