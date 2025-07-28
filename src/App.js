@@ -61,7 +61,7 @@ function App() {
           <Route path="/identification" element={<IdentificationScreen />} />
           <Route path="/complete-profile" element={<ProfileSignupScreen signupData={signupData} setSignupData={setSignupData} />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/edit-profile" element={<Profile />} />
+          <Route path="/edit-profile" element={<EditProfileScreen />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/search-date" element={<DateSelectionScreensWrapper />} />
           <Route path="/search-guests" element={<GuestsSelectionScreenWrapper />} />
