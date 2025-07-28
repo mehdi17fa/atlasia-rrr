@@ -45,7 +45,7 @@ const navItems = [
         <path d="M5.121 17.804A7 7 0 0112 15a7 7 0 016.879 2.804M15 11a3 3 0 10-6 0 3 3 0 006 0z" />
       </svg>
     ),
-    path: '/login',
+    path: '/profile',
   },
 ];
 
