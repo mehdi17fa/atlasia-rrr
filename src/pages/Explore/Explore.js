@@ -2,8 +2,17 @@
 import React from 'react';
 import ListingCardGrid from '../../components/ListingCard/ListingCardGrid';
 import SectionTitle from '../../components/shared/SectionTitle';
+import { useNavigate } from 'react-router-dom';
 
 export default function Explore() {
+  const navigate = useNavigate();
+
+  const handleCardClick = (listing) => {
+    if (listing.title === 'Villa Makarska') {
+      navigate('/VillaMakarska');
+    }
+  };
+
   const popularOptions = [
     {
       image: '../../villa1.jpg',
@@ -15,6 +24,7 @@ export default function Explore() {
       bathrooms: 4,
       area: 460,
       price: 280,
+      
     },
     {
       image: '../../villa2.jpg',
@@ -28,13 +38,13 @@ export default function Explore() {
     },
   ];
 
-  return (
+ return (
     <div>
       <SectionTitle title="Options Populaires:" />
-      <ListingCardGrid listings={popularOptions} />
-      
+      <ListingCardGrid listings={popularOptions} onCardClick={handleCardClick} />
+
       <SectionTitle title="Logement Downtown:" />
-      <ListingCardGrid listings={popularOptions} />
+      <ListingCardGrid listings={popularOptions} onCardClick={handleCardClick} />
     </div>
   );
 }
