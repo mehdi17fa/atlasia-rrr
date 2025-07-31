@@ -31,8 +31,10 @@ import PropertyPriceStep from './pages/propertyOwner/PropertyPriceStep';
 import PropertyDocumentsStep from './pages/propertyOwner/PropertyDocumentsStep';
 import MyProperties from './pages/propertyOwner/MyProperties';
 
-// Intermédiaire
+// Intermediate
 import HomeIntermédiaire from './pages/Intermediate/Acceuil';
+import CreatePackage from './pages/Intermediate/CreatePackage';
+import SelectPropertyStep from './pages/Intermediate/SelectPropertyStep';
 
 // Inbox / Chat
 import Inbox from './pages/Inbox/Inbox';
@@ -168,6 +170,10 @@ function App() {
           <Route path="/property-price" element={<PropertyPriceStep />} />
           <Route path="/property-documents" element={<PropertyDocumentsStep />} />
           <Route path="/my-properties" element={<MyProperties />} />
+
+          {/* Intermediate */}
+          <Route path="/create-package" element={<CreatePackage />} />
+          <Route path="/select-property" element={<SelectPropertyStep />} />
         </Routes>
 
         <AppRedirector />

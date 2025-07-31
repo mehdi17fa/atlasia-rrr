@@ -1,18 +1,47 @@
 import React, { useState } from "react";
 import Calendar from "../../components/shared/Calendar";
 import { useNavigate } from "react-router-dom";
+import NavigationButton from "../../components/shared/NavigationButtons";
+
+const stepOrder = [
+  { key: "date", label: "Date", to: "/create-package" },
+  { key: "property", label: "Propriété", to: "/select-property" },
+  { key: "activities", label: "Activités", to: "/create-package/activities" },
+  // Add more steps as needed
+];
+
+function formatDateRange(dateRange) {
+  if (!dateRange) return "";
+  const options = { day: "2-digit", month: "short", year: "numeric" };
+  if (Array.isArray(dateRange) && dateRange.length === 2 && dateRange[0] && dateRange[1]) {
+    const [start, end] = dateRange;
+    return (
+      start.toLocaleDateString("fr-FR", options) +
+      " - " +
+      end.toLocaleDateString("fr-FR", options)
+    );
+  }
+  if (dateRange instanceof Date) {
+    return dateRange.toLocaleDateString("fr-FR", options);
+  }
+  return "";
+}
 
 export default function CreatePackage() {
   const [selectedDate, setSelectedDate] = useState(null);
+  const [stepsCompleted, setStepsCompleted] = useState({ date: false });
   const navigate = useNavigate();
 
   const handleNext = () => {
     if (selectedDate) {
-      // Save the date to context or state as needed
-      // Then go to the next step (e.g., activities selection)
+      setStepsCompleted((prev) => ({ ...prev, date: true }));
       navigate("/select-property", { state: { date: selectedDate } });
     }
   };
+
+  const currentStepKey = "date";
+  const currentStepIndex = stepOrder.findIndex((step) => step.key === currentStepKey);
+  const stepsAfter = stepOrder.slice(currentStepIndex + 1);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center">
@@ -28,6 +57,28 @@ export default function CreatePackage() {
           <span className="text-green-800 font-bold text-xl">Atlasia</span>
         </div>
         <div className="bg-white rounded-xl shadow p-4 mt-2">
+          {/* Completed steps before current */}
+          <div className="mb-4">
+            {stepOrder.slice(0, currentStepIndex).map((step) =>
+              step.key === "date" && selectedDate && Array.isArray(selectedDate) && selectedDate[0] && selectedDate[1] ? (
+                <NavigationButton
+                  key={step.key}
+                  left={step.label}
+                  right={formatDateRange(selectedDate)}
+                  to={step.to}
+                  active={false}
+                />
+              ) : stepsCompleted[step.key] ? (
+                <NavigationButton
+                  key={step.key}
+                  left={step.label}
+                  right="✓"
+                  to={step.to}
+                  active={false}
+                />
+              ) : null
+            )}
+          </div>
           <h2 className="text-green-800 text-center text-lg font-bold mb-1">
             Etape 1: <span className="text-black">Date</span>
           </h2>
@@ -48,6 +99,20 @@ export default function CreatePackage() {
           >
             Suivant
           </button>
+          {/* Completed steps after current, below Suivant */}
+          <div className="mt-4 flex flex-col gap-2">
+            {stepsAfter.map((step) =>
+              stepsCompleted[step.key] ? (
+                <NavigationButton
+                  key={step.key}
+                  left={step.label}
+                  right="✓"
+                  to={step.to}
+                  active={false}
+                />
+              ) : null
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import NavigationButton from "../../components/shared/NavigationButtons";
 
 // Dummy properties, replace with your real data or props
 const properties = [
@@ -17,6 +18,13 @@ const properties = [
     price: 360,
     image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=80&q=80"
   }
+];
+
+const stepOrder = [
+  { key: "date", label: "Date", to: "/create-package" },
+  { key: "property", label: "Propriété", to: "/select-property" },
+  { key: "activities", label: "Activités", to: "/create-package/activities" },
+  // Add more steps as needed
 ];
 
 function formatDateRange(dateRange) {
@@ -43,15 +51,21 @@ export default function SelectPropertyStep() {
   const date = location.state?.date;
 
   const [selectedProperty, setSelectedProperty] = useState(null);
+  const [stepsCompleted, setStepsCompleted] = useState({ date: true, property: false });
 
   const handleNext = () => {
     if (selectedProperty) {
+      setStepsCompleted((prev) => ({ ...prev, property: true }));
       // Pass selected property and date to the next step
       navigate("/create-package/activities", {
         state: { date, property: selectedProperty }
       });
     }
   };
+
+  const currentStepKey = "property";
+  const currentStepIndex = stepOrder.findIndex((step) => step.key === currentStepKey);
+  const stepsAfter = stepOrder.slice(currentStepIndex + 1);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center">
@@ -74,6 +88,20 @@ export default function SelectPropertyStep() {
           </span>
         </div>
         <div className="bg-white rounded-xl shadow p-4 mt-2">
+          {/* Completed steps before current
+          <div className="mb-4">
+            {stepOrder.slice(0, currentStepIndex).map((step) =>
+              stepsCompleted[step.key] ? (
+                <NavigationButton
+                  key={step.key}
+                  left={step.label}
+                  right="✓"
+                  to={step.to}
+                  active={false}
+                />
+              ) : null
+            )}
+          </div> */}
           <h2 className="text-green-800 text-center text-lg font-bold mb-1">
             Etape 2: <span className="text-black">Propriété</span>
           </h2>
@@ -119,6 +147,20 @@ export default function SelectPropertyStep() {
           >
             Suivant
           </button>
+          {/* Completed steps after current, below Suivant */}
+          <div className="mt-4 flex flex-col gap-2">
+            {stepsAfter.map((step) =>
+              stepsCompleted[step.key] ? (
+                <NavigationButton
+                  key={step.key}
+                  left={step.label}
+                  right="✓"
+                  to={step.to}
+                  active={false}
+                />
+              ) : null
+            )}
+          </div>
         </div>
       </div>
     </div>
