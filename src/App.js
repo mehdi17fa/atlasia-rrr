@@ -21,7 +21,6 @@ import Explore from './pages/Explore/Explore';
 import Restauration from './pages/Explore/Restauration';
 import Profile from './pages/Profile/Profile';
 import Favorites from './pages/Favorite/Favorite';
-import Navbar from './components/shared/Navbar';
 
 // Property Owner
 import WelcomeOwner from './pages/propertyOwner/WelcomeOwner';
@@ -36,11 +35,17 @@ import PropertyPriceStep from './pages/propertyOwner/PropertyPriceStep';
 import PropertyDocumentsStep from './pages/propertyOwner/PropertyDocumentsStep';
 import MyProperties from './pages/propertyOwner/MyProperties';
 
-// Intermediate
+// Intermédiaire
 import HomeIntermédiaire from './pages/Intermediate/Acceuil';
 import CreatePackage from './pages/Intermediate/CreatePackage';
 import SelectPropertyStep from './pages/Intermediate/SelectPropertyStep';
 
+// Inbox / Chat
+import Inbox from './pages/Inbox/Inbox';
+import NotificationCenter from './pages/Inbox/NotificationCenter';
+import ChatPage from './pages/Inbox/chatPage';
+
+// Modals / Search
 import DateSelectionScreens from './pages/UserSearch/Date';
 import GuestsSelectionScreen from './pages/UserSearch/Invités';
 
