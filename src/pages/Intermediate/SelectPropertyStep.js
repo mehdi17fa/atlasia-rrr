@@ -23,7 +23,7 @@ const properties = [
 const stepOrder = [
   { key: "date", label: "Date", to: "/create-package" },
   { key: "property", label: "Propriété", to: "/select-property" },
-  { key: "activities", label: "Activités", to: "/create-package/activities" },
+  // { key: "activities", label: "Activités", to: "/create-package/activities" },
   // Add more steps as needed
 ];
 
@@ -147,19 +147,17 @@ export default function SelectPropertyStep() {
           >
             Suivant
           </button>
-          {/* Completed steps after current, below Suivant */}
+          {/* Navigation buttons for upcoming steps */}
           <div className="mt-4 flex flex-col gap-2">
-            {stepsAfter.map((step) =>
-              stepsCompleted[step.key] ? (
-                <NavigationButton
-                  key={step.key}
-                  left={step.label}
-                  right="✓"
-                  to={step.to}
-                  active={false}
-                />
-              ) : null
-            )}
+            {stepsAfter.map((step) => (
+              <NavigationButton
+                key={step.key}
+                left={step.label}
+                right="→"
+                to={step.to}
+                active={false}
+              />
+            ))}
           </div>
         </div>
       </div>

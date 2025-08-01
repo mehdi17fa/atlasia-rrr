@@ -43,6 +43,8 @@ import HomeIntermédiaire from './pages/Intermediate/Acceuil';
 import CreatePackage from './pages/Intermediate/CreatePackage';
 import SelectPropertyStep from './pages/Intermediate/SelectPropertyStep';
 import SelectResStep from './pages/Intermediate/SelectResStep';
+import PackageNameStep from './pages/Intermediate/PackageNameStep';
+import PackagePriceStep from './pages/Intermediate/PackagePriceStep';
 
 // Inbox / Chat
 import Inbox from './pages/Inbox/Inbox';
@@ -183,6 +185,8 @@ function App() {
         <Route path="/create-package" element={<CreatePackage />} />
         <Route path="/select-property" element={<SelectPropertyStep />} />
         <Route path="/select-res" element={<SelectResStep />} />
+        <Route path="/package-name" element={<PackageNameStep />} />
+        <Route path="/package-price" element={<PackagePriceStep />} />
       </Routes>
 
       <ConditionalNavbar />
