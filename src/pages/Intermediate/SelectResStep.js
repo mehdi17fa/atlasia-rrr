@@ -2,28 +2,26 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavigationButton from "../../components/shared/NavigationButtons";
 
-// Dummy properties, replace with your real data or props
-const properties = [
+// Dummy restaurants data, replace with your real data or props
+const restaurants = [
   {
     id: 1,
-    name: "Appart. Zephire",
+    name: "Foodle Restaurants",
     location: "Ifrane - Downtown",
-    price: 360,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=80&q=80"
+    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=80&q=80"
   },
   {
     id: 2,
-    name: "Villa Makarska",
+    name: "Lyn Restaurant",
     location: "Ifrane - Downtown",
-    price: 360,
-    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=80&q=80"
+    image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=80&q=80"
   }
 ];
 
 const stepOrder = [
   { key: "date", label: "Date", to: "/create-package" },
   { key: "property", label: "Propriété", to: "/select-property" },
-  { key: "activities", label: "Activités", to: "/create-package/activities" },
+  { key: "activities", label: "Type de pack", to: "/create-package/activities" },
   // Add more steps as needed
 ];
 
@@ -44,26 +42,35 @@ function formatDateRange(dateRange) {
   return "";
 }
 
-export default function SelectPropertyStep() {
+export default function ActivitiesStep() {
   const location = useLocation();
   const navigate = useNavigate();
-  // Get date from previous step (could be a single date or [start, end])
-  const date = location.state?.date;
-
-  const [selectedProperty, setSelectedProperty] = useState(null);
-  const [stepsCompleted, setStepsCompleted] = useState({ date: true, property: false });
+  const { date, property } = location.state || {};
+  const [selectedRestaurants, setSelectedRestaurants] = useState([]);
+  const [stepsCompleted, setStepsCompleted] = useState({ 
+    date: true, 
+    property: true, 
+    activities: false 
+  });
 
   const handleNext = () => {
-    if (selectedProperty) {
-      setStepsCompleted((prev) => ({ ...prev, property: true }));
-      // Pass selected property and date to the next step
-      navigate("/select-res", {
-        state: { date, property: selectedProperty }
+    if (selectedRestaurants.length > 0) {
+      setStepsCompleted((prev) => ({ ...prev, activities: true }));
+      navigate("/create-package/next-step", {
+        state: { date, property, restaurants: selectedRestaurants }
       });
     }
   };
 
-  const currentStepKey = "property";
+  const toggleRestaurant = (restaurant) => {
+    setSelectedRestaurants(prev => 
+      prev.some(r => r.id === restaurant.id)
+        ? prev.filter(r => r.id !== restaurant.id)
+        : [...prev, restaurant]
+    );
+  };
+
+  const currentStepKey = "activities";
   const currentStepIndex = stepOrder.findIndex((step) => step.key === currentStepKey);
   const stepsAfter = stepOrder.slice(currentStepIndex + 1);
 
@@ -80,74 +87,81 @@ export default function SelectPropertyStep() {
           </button>
           <span className="text-green-800 font-bold text-xl">Atlasia</span>
         </div>
-        {/* Date summary */}
-        <div className="w-full rounded-xl border px-4 py-2 mb-4 flex items-center gap-2 bg-white font-medium">
-          <span className="text-gray-600">Date</span>
-          <span className="flex-1 text-right text-black">
-            {formatDateRange(date)}
-          </span>
+        
+        {/* Date and Property summary */}
+        <div className="w-full rounded-xl border px-4 py-2 mb-2 flex flex-col gap-2 bg-white font-medium">
+          <div className="flex items-center">
+            <span className="text-gray-600">Date</span>
+            <span className="flex-1 text-right text-black">
+              {formatDateRange(date)}
+            </span>
+          </div>
+          <div className="flex items-center">
+            <span className="text-gray-600">Propriété</span>
+            <span className="flex-1 text-right text-black">
+              {property?.name}
+            </span>
+          </div>
         </div>
+
         <div className="bg-white rounded-xl shadow p-4 mt-2">
-          {/* Completed steps before current
-          <div className="mb-4">
-            {stepOrder.slice(0, currentStepIndex).map((step) =>
-              stepsCompleted[step.key] ? (
-                <NavigationButton
-                  key={step.key}
-                  left={step.label}
-                  right="✓"
-                  to={step.to}
-                  active={false}
-                />
-              ) : null
-            )}
-          </div> */}
           <h2 className="text-green-800 text-center text-lg font-bold mb-1">
-            Etape 2: <span className="text-black">Propriété</span>
+            Etape 3: <span className="text-black">Type de pack</span>
           </h2>
-          <p className="text-center text-gray-700 mb-4 font-medium">
-            Selectionner une de vos Propriétés:
-          </p>
+          
+          {/* Categories */}
+          <div className="flex justify-center gap-4 mb-4">
+            <button className="text-green-800 font-medium border-b-2 border-green-800 pb-1">
+              Restaurants
+            </button>
+            <button className="text-gray-500 font-medium">
+              Activités
+            </button>
+            <button className="text-gray-500 font-medium">
+              Services
+            </button>
+          </div>
+
+          {/* Restaurants list */}
           <div className="flex flex-col gap-3 mb-6">
-            {properties.map((prop) => (
+            {restaurants.map((restaurant) => (
               <button
-                key={prop.id}
-                onClick={() => setSelectedProperty(prop)}
-                className={`flex items-center justify-between w-full rounded-xl border px-2 py-2 transition
-                  ${selectedProperty?.id === prop.id
+                key={restaurant.id}
+                onClick={() => toggleRestaurant(restaurant)}
+                className={`flex items-center w-full rounded-xl border px-2 py-2 transition
+                  ${selectedRestaurants.some(r => r.id === restaurant.id)
                     ? "border-green-800 bg-green-50"
                     : "border-gray-200 bg-white hover:bg-gray-50"}
                 `}
               >
                 <div className="flex items-center gap-3">
                   <img
-                    src={prop.image}
-                    alt={prop.name}
+                    src={restaurant.image}
+                    alt={restaurant.name}
                     className="w-14 h-14 rounded-lg object-cover"
                   />
                   <div className="text-left">
-                    <div className="font-semibold">{prop.name}</div>
-                    <div className="text-gray-500 text-sm">{prop.location}</div>
+                    <div className="font-semibold">{restaurant.name}</div>
+                    <div className="text-gray-500 text-sm">{restaurant.location}</div>
                   </div>
-                </div>
-                <div className="text-green-900 font-bold text-base whitespace-nowrap">
-                  {prop.price} MAD
                 </div>
               </button>
             ))}
           </div>
+
           <button
             className={`w-full rounded-full py-2 font-semibold text-lg transition ${
-              selectedProperty
+              selectedRestaurants.length > 0
                 ? "bg-green-800 text-white hover:bg-green-900"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
-            disabled={!selectedProperty}
+            disabled={selectedRestaurants.length === 0}
             onClick={handleNext}
           >
             Suivant
           </button>
-          {/* Completed steps after current, below Suivant */}
+
+          {/* Completed steps after current */}
           <div className="mt-4 flex flex-col gap-2">
             {stepsAfter.map((step) =>
               stepsCompleted[step.key] ? (

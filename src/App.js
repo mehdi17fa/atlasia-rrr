@@ -21,6 +21,9 @@ import Explore from './pages/Explore/Explore';
 import Restauration from './pages/Explore/Restauration';
 import Profile from './pages/Profile/Profile';
 import Favorites from './pages/Favorite/Favorite';
+import Navbar from './components/shared/Navbar';
+import { PropertyCreationProvider } from './context/PropertyCreationContext';
+import WelcomeScreen from './pages/WelcomeScreen';
 
 // Property Owner
 import WelcomeOwner from './pages/propertyOwner/WelcomeOwner';
@@ -39,6 +42,7 @@ import MyProperties from './pages/propertyOwner/MyProperties';
 import HomeIntermédiaire from './pages/Intermediate/Acceuil';
 import CreatePackage from './pages/Intermediate/CreatePackage';
 import SelectPropertyStep from './pages/Intermediate/SelectPropertyStep';
+import SelectResStep from './pages/Intermediate/SelectResStep';
 
 // Inbox / Chat
 import Inbox from './pages/Inbox/Inbox';
@@ -52,54 +56,6 @@ import GuestsSelectionScreen from './pages/UserSearch/Invités';
 import ExploreLayout from './pages/Layout/Layout';
 import VillaMakarska from './pages/Propriétés/VillaMakarska';
 import EditProfileScreen from './pages/Profile/EditProfile';
-
-
-function App() {
-
-  const [signupData, setSignupData] = useState({
-    email: '',
-    password: '',
-    role: '',
-    fullName: '',
-  });
-
-  return (
-    
-      <>
-        <Routes>
-          {/* Existing routes */}
-          <Route path="/" element={<ExploreLayout />}>
-            <Route index element={<Explore />} />
-            <Route path="restauration" element={<Restauration />} />
-          </Route>
-
-          {/* Auth routes */}
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/password-recovery" element={<PasswordRecoveryScreen />} />
-          <Route path="/password-recovery-confirmation" element={<PasswordRecoveryConfirmation />} />
-          <Route path="/signup" element={<SignUpScreen />} />
-          <Route path="/signup-confirmation" element={<SignupScreenConf />} />
-          <Route path="/identification" element={<IdentificationScreen />} />
-          <Route path="/complete-profile" element={<ProfileSignupScreen signupData={signupData} setSignupData={setSignupData} />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/edit-profile" element={<EditProfileScreen />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/search-date" element={<DateSelectionScreensWrapper />} />
-          <Route path="/search-guests" element={<GuestsSelectionScreenWrapper />} />
-          <Route path="/welcomescreen" element={<WelcomeScreen />} />
-          <Route path="/partner-welcome" element={<HomeIntermédiaire />} />
-          <Route path="/VillaMakarska" element={<VillaMakarska />} />
-        </Routes>
-
-        {/* ✅ Always render Navbar, but only show on mobile */}
-        <div className="block md:hidden">
-          <Navbar />
-        </div>
-      </>
-    
-  );
-}
-
 
 // Explore affiché en fond avec modal devant
 function ModalLayout({ children }) {
@@ -173,64 +129,64 @@ function App() {
   });
 
   return (
-    // <Router>
-      <PropertyCreationProvider>
-        <Routes>
-          {/* Explore layout */}
-          <Route path="/" element={<ExploreLayout />}>
-            <Route index element={<Explore />} />
-            <Route path="restauration" element={<Restauration />} />
-          </Route>
+    <PropertyCreationProvider>
+      <Routes>
+        {/* Explore layout */}
+        <Route path="/" element={<ExploreLayout />}>
+          <Route index element={<Explore />} />
+          <Route path="restauration" element={<Restauration />} />
+        </Route>
 
-          {/* General / Auth */}
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/signup" element={<SignUpScreen />} />
-          <Route path="/signup-confirmation" element={<SignupScreenConf />} />
-          <Route path="/identification" element={<IdentificationScreen />} />
-          <Route
-            path="/complete-profile"
-            element={<ProfileSignupScreen signupData={signupData} setSignupData={setSignupData} />}
-          />
-          <Route path="/password-recovery" element={<PasswordRecoveryScreen />} />
-          <Route path="/password-recovery-confirmation" element={<PasswordRecoveryConfirmation />} />
-          <Route path="/welcomescreen" element={<WelcomeScreen />} />
+        {/* General / Auth */}
+        <Route path="/login" element={<LoginScreen />} />
+        <Route path="/signup" element={<SignUpScreen />} />
+        <Route path="/signup-confirmation" element={<SignupScreenConf />} />
+        <Route path="/identification" element={<IdentificationScreen />} />
+        <Route
+          path="/complete-profile"
+          element={<ProfileSignupScreen signupData={signupData} setSignupData={setSignupData} />}
+        />
+        <Route path="/password-recovery" element={<PasswordRecoveryScreen />} />
+        <Route path="/password-recovery-confirmation" element={<PasswordRecoveryConfirmation />} />
+        <Route path="/welcomescreen" element={<WelcomeScreen />} />
 
-          {/* User sections */}
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/partner-welcome" element={<HomeIntermédiaire />} />
+        {/* User sections */}
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/edit-profile" element={<EditProfileScreen />} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/partner-welcome" element={<HomeIntermédiaire />} />
+        <Route path="/VillaMakarska" element={<VillaMakarska />} />
 
-          {/* Messages */}
-          <Route path="/inbox" element={<Inbox />} />
-          <Route path="/notifications" element={<NotificationCenter />} />
-          <Route path="/chat/:sender" element={<ChatPage />} />
+        {/* Messages */}
+        <Route path="/inbox" element={<Inbox />} />
+        <Route path="/notifications" element={<NotificationCenter />} />
+        <Route path="/chat/:sender" element={<ChatPage />} />
 
-          {/* Modals */}
-          <Route path="/search-date" element={<DateSelectionScreensWrapper />} />
-          <Route path="/search-guests" element={<GuestsSelectionScreenWrapper />} />
+        {/* Modals */}
+        <Route path="/search-date" element={<DateSelectionScreensWrapper />} />
+        <Route path="/search-guests" element={<GuestsSelectionScreenWrapper />} />
 
-          {/* Property owner flow */}
-          <Route path="/owner-welcome" element={<WelcomeOwner />} />
-          <Route path="/property-localisation" element={<AddProperty />} />
-          <Route path="/property-type" element={<PropertyTypeStep />} />
-          <Route path="/property-info" element={<PropertyInfoStep />} />
-          <Route path="/property-equipments" element={<PropertyEquipmentsStep />} />
-          <Route path="/property-photos" element={<PropertyPhotosStep />} />
-          <Route path="/property-title" element={<PropertyTitleStep />} />
-          <Route path="/property-description" element={<PropertyDescriptionStep />} />
-          <Route path="/property-price" element={<PropertyPriceStep />} />
-          <Route path="/property-documents" element={<PropertyDocumentsStep />} />
-          <Route path="/my-properties" element={<MyProperties />} />
+        {/* Property owner flow */}
+        <Route path="/owner-welcome" element={<WelcomeOwner />} />
+        <Route path="/property-localisation" element={<AddProperty />} />
+        <Route path="/property-type" element={<PropertyTypeStep />} />
+        <Route path="/property-info" element={<PropertyInfoStep />} />
+        <Route path="/property-equipments" element={<PropertyEquipmentsStep />} />
+        <Route path="/property-photos" element={<PropertyPhotosStep />} />
+        <Route path="/property-title" element={<PropertyTitleStep />} />
+        <Route path="/property-description" element={<PropertyDescriptionStep />} />
+        <Route path="/property-price" element={<PropertyPriceStep />} />
+        <Route path="/property-documents" element={<PropertyDocumentsStep />} />
+        <Route path="/my-properties" element={<MyProperties />} />
 
-          {/* Intermediate */}
-          <Route path="/create-package" element={<CreatePackage />} />
-          <Route path="/select-property" element={<SelectPropertyStep />} />
-        </Routes>
+        {/* Intermediate */}
+        <Route path="/create-package" element={<CreatePackage />} />
+        <Route path="/select-property" element={<SelectPropertyStep />} />
+        <Route path="/select-res" element={<SelectResStep />} />
+      </Routes>
 
-        <AppRedirector />
-        <ConditionalNavbar />
-      </PropertyCreationProvider>
-    // </Router>
+      <ConditionalNavbar />
+    </PropertyCreationProvider>
   );
 }
 
