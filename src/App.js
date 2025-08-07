@@ -40,7 +40,7 @@ import MyProperties from './pages/propertyOwner/MyProperties';
 
 // Intermédiaire
 import HomeIntermédiaire from './pages/Intermediate/Acceuil';
-import CreatePackage from './pages/Intermediate/CreatePackage';
+import CreatePackage from './pages/Intermediate/createPackage';
 import SelectPropertyStep from './pages/Intermediate/SelectPropertyStep';
 import SelectResStep from './pages/Intermediate/SelectResStep';
 import PackageNameStep from './pages/Intermediate/PackageNameStep';
