@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function SignUpScreen() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function SignUpScreen() {
   const validatePassword = (password) =>
     /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(password);
 
-  const handleVerify = () => {
+  const handleNext = async () => {
     if (!email || !password || !confirmPassword) {
       setError('All fields are required.');
     } else if (!validateEmail(email)) {
@@ -21,29 +22,38 @@ export default function SignUpScreen() {
       setError('Password must be at least 8 characters long and include letters and numbers.');
     } else if (password !== confirmPassword) {
       setError('Passwords do not match.');
-    } else if (email.toLowerCase() === 'test@email.com') {
-      setError('This email address is already registered.');
     } else {
       setError('');
-      navigate('/signup-confirmation');
+      try {
+        // Call backend step1: create user with email & password only
+        const res = await axios.post('http://localhost:4000/api/auth/register-step1', {
+          email,
+          password,
+        });
+
+        console.log(res.data);
+
+        // Save email locally for next step
+        localStorage.setItem('signupEmail', email);
+
+        // Navigate to verification code step
+        navigate('/signup-confirmation', { state: { email } });
+      } catch (err) {
+        setError(err.response?.data?.message || 'Registration failed');
+      }
     }
   };
 
   const handleClose = () => {
-    navigate(-1); // Go back to previous page
+    navigate(-1);
   };
 
   return (
     <>
-      {/* Dark overlay background */}
       <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={handleClose} />
-      
-      {/* Modal container */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
           <div className="flex flex-col items-center justify-start px-6 py-8">
-            
-            {/* Header */}
             <div className="w-full mb-4 relative">
               <button
                 onClick={handleClose}
@@ -56,17 +66,14 @@ export default function SignUpScreen() {
               </h1>
             </div>
 
-            {/* Progress bar */}
             <div className="h-1 w-full bg-green-800 relative mb-6">
               <div className="absolute top-0 left-0 h-1 bg-green-800" />
             </div>
 
-            {/* Welcome Text */}
             <h2 className="text-3xl font-bold text-green-800 text-center mb-8">
               Welcome
             </h2>
 
-            {/* Input Fields */}
             <div className="w-full space-y-4 border border-gray-300 rounded-xl p-4 mb-4">
               <input
                 type="email"
@@ -91,7 +98,6 @@ export default function SignUpScreen() {
               />
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="mb-4 text-red-500 text-sm flex items-center">
                 <span className="mr-2">✗</span>
@@ -107,15 +113,13 @@ export default function SignUpScreen() {
               </div>
             )}
 
-            {/* Continue Button */}
             <button
-              onClick={handleVerify}
+              onClick={handleNext}
               className="bg-green-800 hover:bg-green-700 text-white text-lg font-semibold rounded-full py-3 px-8 w-full transition mb-6"
             >
               Continue
             </button>
 
-            {/* Login Link */}
             <p className="text-sm text-gray-600 text-center">
               Already have an account?{' '}
               <button

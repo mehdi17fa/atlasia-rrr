@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 import {
   BrowserRouter as Router,
@@ -24,6 +26,7 @@ import Favorites from './pages/Favorite/Favorite';
 import Navbar from './components/shared/Navbar';
 import { PropertyCreationProvider } from './context/PropertyCreationContext';
 import WelcomeScreen from './pages/WelcomeScreen';
+import ResetPasswordScreen from './pages/LogIn/ResetPasswordScreen';
 
 // Property Owner
 import WelcomeOwner from './pages/propertyOwner/WelcomeOwner';
@@ -150,6 +153,7 @@ function App() {
         />
         <Route path="/password-recovery" element={<PasswordRecoveryScreen />} />
         <Route path="/password-recovery-confirmation" element={<PasswordRecoveryConfirmation />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordScreen />} />
         <Route path="/welcomescreen" element={<WelcomeScreen />} />
 
         {/* User sections */}

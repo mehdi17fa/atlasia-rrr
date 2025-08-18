@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -7,18 +8,44 @@ export default function LoginScreen() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Validate email format
   const validateEmail = (email) =>
     /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email);
 
-  const handleLogin = () => {
+  // Handle login button click
+  const handleLogin = async () => {
+    console.log("Login button clicked"); // 🔹 Debug
+
     if (!email || !password) {
       setError('All fields are required.');
-    } else if (!validateEmail(email)) {
+      return;
+    }
+
+    if (!validateEmail(email)) {
       setError('Email must be in format: example@gmail.com');
-    } else {
+      return;
+    }
+
+    try {
       setError('');
-      console.log('Login success with:', { email, password });
-      navigate('/'); // Navigate back to explore page after successful login
+      const response = await axios.post('http://localhost:4000/api/auth/login', {
+        email,
+        password
+      });
+
+      console.log('Login response:', response.data);
+
+      // Save user info to localStorage (optional)
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      // Navigate based on role or default
+      if (response.data.user.role === 'owner') navigate('/owner-dashboard');
+      else if (response.data.user.role === 'partner') navigate('/partner-dashboard');
+      else navigate('/');
+
+    } catch (err) {
+      console.error('Login error:', err.response?.data || err.message);
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
     }
   };
 
@@ -28,38 +55,32 @@ export default function LoginScreen() {
 
   return (
     <>
-      {/* Dark overlay background */}
+      {/* Dark overlay */}
       <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={handleClose} />
-      
+
       {/* Modal container */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-          <div className="flex flex-col items-center justify-start px-6 py-8">
-            
-            {/* Header */}
-            <div className="w-full mb-4 relative">
-              <button
-                onClick={handleClose}
-                className="text-2xl hover:opacity-70 absolute -top-2 -right-2 text-gray-600"
-              >
-                ✕
-              </button>
-              <h1 className="text-2xl font-bold text-black text-center">
-                Log In
-              </h1>
-            </div>
+        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto relative">
 
-            {/* Progress bar */}
-            <div className="h-1 w-full bg-green-800 relative mb-6">
-              <div className="absolute top-0 left-0 h-1 bg-green-800" />
-            </div>
+          {/* Close button */}
+          <button
+            onClick={handleClose}
+            className="text-2xl hover:opacity-70 absolute top-4 right-4 text-gray-600"
+          >
+            ✕
+          </button>
 
-            {/* Welcome Text */}
+          <div className="flex flex-col items-center justify-start px-6 py-8 w-full">
+
+            <h1 className="text-2xl font-bold text-black text-center mb-6">
+              Log In
+            </h1>
+
             <h2 className="text-3xl font-bold text-green-800 text-center mb-8">
               Welcome back!
             </h2>
 
-            {/* Inputs */}
+            {/* Input fields */}
             <div className="w-full space-y-4 border border-gray-300 rounded-xl p-4 mb-4">
               <input
                 type="email"
@@ -77,7 +98,7 @@ export default function LoginScreen() {
               />
             </div>
 
-            {/* Error Message */}
+            {/* Error message */}
             {error && (
               <div className="mb-4 text-red-500 text-sm flex items-center">
                 <span className="mr-2">✗</span>
@@ -85,7 +106,7 @@ export default function LoginScreen() {
               </div>
             )}
 
-            {/* Forgot Password Button */}
+            {/* Forgot password */}
             <div className="w-full flex justify-center mb-6">
               <button
                 onClick={() => navigate('/password-recovery')}
@@ -95,7 +116,7 @@ export default function LoginScreen() {
               </button>
             </div>
 
-            {/* Login Button */}
+            {/* Login button */}
             <button
               onClick={handleLogin}
               className="bg-green-800 hover:bg-green-700 text-white text-lg font-semibold rounded-full py-3 px-8 w-full transition mb-6"
@@ -103,7 +124,7 @@ export default function LoginScreen() {
               Log In
             </button>
 
-            {/* Sign Up Link */}
+            {/* Sign up link */}
             <p className="text-sm text-gray-600 text-center">
               No account?{' '}
               <button
@@ -113,6 +134,7 @@ export default function LoginScreen() {
                 Sign up here
               </button>
             </p>
+
           </div>
         </div>
       </div>
