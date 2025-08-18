@@ -5,7 +5,7 @@ import axios from 'axios';
 export default function SignupScreenConf() {
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email; // Get email from previous step
+  const email = location.state?.email || localStorage.getItem('signupEmail') || '';
 
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState(false);
@@ -15,9 +15,7 @@ export default function SignupScreenConf() {
   useEffect(() => {
     let interval = null;
     if (isTimerActive && timer > 0) {
-      interval = setInterval(() => {
-        setTimer(prev => prev - 1);
-      }, 1000);
+      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
     } else if (timer === 0 && isTimerActive) {
       setIsTimerActive(false);
     }
@@ -25,24 +23,15 @@ export default function SignupScreenConf() {
   }, [isTimerActive, timer]);
 
   const handleVerify = async () => {
-    const inputCode = code.join('');
-    if (!email) {
-      alert('Email not found. Please go back and restart signup.');
-      return;
-    }
-
-    console.log("Verifying with:", { email, code: inputCode });
-
     try {
-      const res = await axios.post('http://localhost:4000/api/auth/verify', {
-        email: String(email),
-        code: String(inputCode)
+      await axios.post('http://localhost:4000/api/auth/verify', {
+        email,
+        code: code.join(''),
       });
-      console.log(res.data);
-      setError(false);
-      navigate('/identification'); // Next signup step
+      navigate('/identification', { state: { email } });
     } catch (err) {
-      console.error("Verification error:", err.response?.data || err.message);
+      console.error('Verification error:', err.response?.data || err.message);
+      alert(err.response?.data?.message || 'Verification failed');
       setError(true);
     }
   };
@@ -52,10 +41,10 @@ export default function SignupScreenConf() {
     setIsTimerActive(true);
     setError(false);
     try {
-      await axios.post('http://localhost:4000/api/auth/resend-verification', { email: String(email) });
+      await axios.post('http://localhost:4000/api/auth/resend-verification', { email });
       alert('Verification code resent! Check your email.');
     } catch (err) {
-      console.error("Resend code error:", err.response?.data || err.message);
+      console.error('Resend code error:', err.response?.data || err.message);
       alert('Failed to resend code.');
     }
   };
@@ -64,7 +53,6 @@ export default function SignupScreenConf() {
     const updated = [...code];
     updated[index] = text.slice(-1);
     setCode(updated);
-
     if (text && index < 5) {
       const nextInput = document.getElementById(`code-input-${index + 1}`);
       if (nextInput) nextInput.focus();
@@ -78,9 +66,7 @@ export default function SignupScreenConf() {
     }
   };
 
-  const handleClose = () => {
-    navigate(-1);
-  };
+  const handleClose = () => navigate(-1);
 
   return (
     <>
@@ -88,7 +74,6 @@ export default function SignupScreenConf() {
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
           <div className="flex flex-col items-center justify-start px-6 py-8">
-
             <div className="w-full mb-4 relative">
               <button
                 onClick={handleClose}
@@ -103,15 +88,12 @@ export default function SignupScreenConf() {
               <div className="absolute top-0 left-0 h-1 w-2/3 bg-green-800" />
             </div>
 
-            <div className="w-full mb-6">
-              <h2 className="text-center text-2xl font-bold text-green-800 mb-2">
-                Enter the 6 digits
-              </h2>
-              <p className="text-center text-sm text-gray-700 mb-6">
-                A code was sent to your email address.<br />
-                Please enter it below to verify your account.
-              </p>
-            </div>
+            <h2 className="text-center text-2xl font-bold text-green-800 mb-2">
+              Enter the 6 digits
+            </h2>
+            <p className="text-center text-sm text-gray-700 mb-6">
+              A code was sent to your email address. Please enter it below to verify your account.
+            </p>
 
             <div className="flex justify-center gap-3 mb-6">
               {code.map((digit, index) => (
@@ -161,7 +143,6 @@ export default function SignupScreenConf() {
             >
               {isTimerActive ? `Send again (${timer}s)` : 'Send again'}
             </button>
-
           </div>
         </div>
       </div>

@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DefaultAvatar from '../assets/default-pp.png';
+import { AuthContext } from '../../context/AuthContext';
 
 const ProfileSignupScreen = () => {
+  const { login } = useContext(AuthContext);
   const [profileImage, setProfileImage] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fullName, setFullName] = useState('');
@@ -19,12 +21,12 @@ const ProfileSignupScreen = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
-  // Get profile type from URL (or localStorage fallback)
   useEffect(() => {
-    const typeFromURL = new URLSearchParams(window.location.search).get("type");
-    const normalizedType = typeFromURL?.toLowerCase() || localStorage.getItem("profileType")?.toLowerCase();
+    const typeFromURL = new URLSearchParams(window.location.search).get('type');
+    const normalizedType =
+      typeFromURL?.toLowerCase() || localStorage.getItem('profileType')?.toLowerCase();
     setProfileType(normalizedType || '');
-    if (typeFromURL) localStorage.setItem("profileType", typeFromURL);
+    if (typeFromURL) localStorage.setItem('profileType', typeFromURL);
   }, []);
 
   const countries = [
@@ -41,7 +43,7 @@ const ProfileSignupScreen = () => {
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
-    if (file) setProfileImage(file); // store file for FormData
+    if (file) setProfileImage(file);
   };
 
   const handleAddPhoto = () => fileInputRef.current?.click();
@@ -68,37 +70,40 @@ const ProfileSignupScreen = () => {
 
     try {
       const formData = new FormData();
-      formData.append('email', localStorage.getItem('signupEmail')); // send email to backend
+      const signupEmail = localStorage.getItem('signupEmail') || '';
+      const signupPassword = localStorage.getItem('signupPassword') || '';
+
+      formData.append('email', signupEmail);
       formData.append('fullName', fullName);
       formData.append('phone', selectedCountry.code + phoneNumber);
       formData.append('country', selectedCountry.name);
       formData.append('gender', gender);
-      formData.append('profileType', profileType); // optional
+      formData.append('profileType', profileType);
       if (profileImage) formData.append('profilePic', profileImage);
 
-      const response = await axios.post(
-        'http://localhost:4000/api/auth/complete-profile', // correct backend route
-        formData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }
-      );
+      await axios.post('http://localhost:4000/api/auth/complete-profile', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
-      console.log('Profile response:', response.data);
+      // Auto-login safely
+      const loginResponse = await axios.post('http://localhost:4000/api/auth/login', {
+        email: signupEmail,
+        password: signupPassword,
+      });
 
-      // Navigate based on role
-      if (profileType === "owner") navigate("/owner-welcome");
-      else if (profileType === "partner") navigate("/partner-welcome");
-      else navigate('/');
+      login(loginResponse.data.user, loginResponse.data.accessToken);
+
+      if (profileType === 'owner') navigate('/owner-welcome');
+      else if (profileType === 'partner') navigate('/partner-welcome');
+      else navigate('/profile');
     } catch (error) {
-      console.error('Error uploading profile:', error.response?.data || error.message);
+      console.error('Error completing profile:', error.response?.data || error.message);
       alert(error.response?.data?.message || 'Failed to complete profile. Please try again.');
     }
   };
 
   return (
     <div className="flex-1 bg-white px-6 mt-8 min-h-screen overflow-auto">
-      {/* Header */}
       <div className="w-full mb-4">
         <button
           onClick={() => navigate(-1)}
@@ -109,12 +114,10 @@ const ProfileSignupScreen = () => {
         <h1 className="text-3xl font-bold text-black text-center mb-8">Sign up</h1>
       </div>
 
-      {/* Form Container */}
       <div className="md:flex md:justify-center md:items-start">
         <div className="bg-white px-4 py-6 w-full max-w-md">
           <h2 className="text-2xl font-semibold text-black text-center mb-6">Profile</h2>
 
-          {/* Profile Picture */}
           <div className="flex justify-center mb-8">
             <div className="relative w-36 h-36 bg-gray-300 rounded-full flex items-center justify-center overflow-hidden">
               <img
@@ -124,6 +127,7 @@ const ProfileSignupScreen = () => {
               />
             </div>
           </div>
+
           <div className="flex justify-center mb-8">
             <button
               onClick={handleAddPhoto}
@@ -134,7 +138,6 @@ const ProfileSignupScreen = () => {
             </button>
           </div>
 
-          {/* Gender Selection */}
           <div className="mb-6 flex justify-center gap-4">
             {['Male', 'Female', 'Other'].map((g) => (
               <button
@@ -149,7 +152,6 @@ const ProfileSignupScreen = () => {
             ))}
           </div>
 
-          {/* Country & Phone */}
           <div className="space-y-4 border border-gray-300 rounded-xl p-4">
             <div className="relative">
               <div className="flex bg-gray-50 rounded-lg border items-center">
@@ -190,7 +192,6 @@ const ProfileSignupScreen = () => {
               </div>
             </div>
 
-            {/* Full Name */}
             <div>
               <input
                 type="text"
@@ -202,7 +203,6 @@ const ProfileSignupScreen = () => {
             </div>
           </div>
 
-          {/* File Input */}
           <input
             ref={fileInputRef}
             type="file"
@@ -211,7 +211,6 @@ const ProfileSignupScreen = () => {
             className="hidden"
           />
 
-          {/* Finish Button */}
           <div className="flex justify-center mt-6">
             <button
               onClick={handleFinish}
@@ -228,7 +227,6 @@ const ProfileSignupScreen = () => {
         </div>
       </div>
 
-      {/* Backdrop */}
       {showCountryDropdown && (
         <div
           className="fixed inset-0 z-40"

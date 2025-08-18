@@ -16,31 +16,40 @@ export default function SignUpScreen() {
   const handleNext = async () => {
     if (!email || !password || !confirmPassword) {
       setError('All fields are required.');
-    } else if (!validateEmail(email)) {
+      return;
+    }
+    if (!validateEmail(email)) {
       setError('Email must be in the format: example@gmail.com');
-    } else if (!validatePassword(password)) {
-      setError('Password must be at least 8 characters long and include letters and numbers.');
-    } else if (password !== confirmPassword) {
+      return;
+    }
+    if (!validatePassword(password)) {
+      setError(
+        'Password must be at least 8 characters long and include letters and numbers.'
+      );
+      return;
+    }
+    if (password !== confirmPassword) {
       setError('Passwords do not match.');
-    } else {
-      setError('');
-      try {
-        // Call backend step1: create user with email & password only
-        const res = await axios.post('http://localhost:4000/api/auth/register-step1', {
-          email,
-          password,
-        });
+      return;
+    }
 
-        console.log(res.data);
+    setError('');
+    try {
+      const res = await axios.post('http://localhost:4000/api/auth/register-step1', {
+        email,
+        password,
+      });
 
-        // Save email locally for next step
-        localStorage.setItem('signupEmail', email);
+      console.log(res.data);
 
-        // Navigate to verification code step
-        navigate('/signup-confirmation', { state: { email } });
-      } catch (err) {
-        setError(err.response?.data?.message || 'Registration failed');
-      }
+      // Save email & password locally for next step safely
+      localStorage.setItem('signupEmail', email);
+      localStorage.setItem('signupPassword', password);
+
+      // Navigate to verification code step
+      navigate('/signup-confirmation', { state: { email, password } });
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
     }
   };
 
@@ -61,18 +70,14 @@ export default function SignUpScreen() {
               >
                 ✕
               </button>
-              <h1 className="text-2xl font-bold text-black text-center">
-                Sign up
-              </h1>
+              <h1 className="text-2xl font-bold text-black text-center">Sign up</h1>
             </div>
 
             <div className="h-1 w-full bg-green-800 relative mb-6">
               <div className="absolute top-0 left-0 h-1 bg-green-800" />
             </div>
 
-            <h2 className="text-3xl font-bold text-green-800 text-center mb-8">
-              Welcome
-            </h2>
+            <h2 className="text-3xl font-bold text-green-800 text-center mb-8">Welcome</h2>
 
             <div className="w-full space-y-4 border border-gray-300 rounded-xl p-4 mb-4">
               <input
