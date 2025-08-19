@@ -65,42 +65,45 @@ const ProfileSignupScreen = () => {
 
   const isFormValid = fullName.trim() !== '' && phoneNumber.length === 10 && gender;
 
-  const handleFinish = async () => {
-    if (!isFormValid) return;
+const handleFinish = async () => {
+  if (!isFormValid) return;
 
-    try {
-      const formData = new FormData();
-      const signupEmail = localStorage.getItem('signupEmail') || '';
-      const signupPassword = localStorage.getItem('signupPassword') || '';
+  try {
+    const formData = new FormData();
+    const signupEmail = localStorage.getItem('signupEmail') || '';
+    const signupPassword = localStorage.getItem('signupPassword') || '';
 
-      formData.append('email', signupEmail);
-      formData.append('fullName', fullName);
-      formData.append('phone', selectedCountry.code + phoneNumber);
-      formData.append('country', selectedCountry.name);
-      formData.append('gender', gender);
-      formData.append('profileType', profileType);
-      if (profileImage) formData.append('profilePic', profileImage);
+    formData.append('email', signupEmail);
+    formData.append('fullName', fullName);
+    formData.append('phone', selectedCountry.code + phoneNumber);
+    formData.append('country', selectedCountry.name);
+    formData.append('gender', gender);
+    formData.append('profileType', profileType);
+    if (profileImage) formData.append('profilePic', profileImage);
 
-      await axios.post('http://localhost:4000/api/auth/complete-profile', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+    await axios.post('http://localhost:4000/api/auth/complete-profile', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
 
-      // Auto-login safely
-      const loginResponse = await axios.post('http://localhost:4000/api/auth/login', {
-        email: signupEmail,
-        password: signupPassword,
-      });
+    // Auto-login
+    const loginResponse = await axios.post('http://localhost:4000/api/auth/login', {
+      email: signupEmail,
+      password: signupPassword,
+    });
 
-      login(loginResponse.data.user, loginResponse.data.accessToken);
+    login(loginResponse.data.user, loginResponse.data.accessToken);
 
-      if (profileType === 'owner') navigate('/owner-welcome');
-      else if (profileType === 'partner') navigate('/partner-welcome');
-      else navigate('/profile');
-    } catch (error) {
-      console.error('Error completing profile:', error.response?.data || error.message);
-      alert(error.response?.data?.message || 'Failed to complete profile. Please try again.');
-    }
-  };
+    // Navigate safely with replace: true to prevent back navigation
+    if (profileType === 'owner') navigate('/owner-welcome', { replace: true });
+    else if (profileType === 'partner') navigate('/partner-welcome', { replace: true });
+    else navigate('/explore', { replace: true }); // default dashboard
+
+  } catch (error) {
+    console.error('Error completing profile:', error.response?.data || error.message);
+    alert(error.response?.data?.message || 'Failed to complete profile. Please try again.');
+  }
+};
+
 
   return (
     <div className="flex-1 bg-white px-6 mt-8 min-h-screen overflow-auto">

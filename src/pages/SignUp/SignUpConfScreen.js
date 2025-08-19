@@ -24,10 +24,14 @@ export default function SignupScreenConf() {
 
   const handleVerify = async () => {
     try {
-      await axios.post('http://localhost:4000/api/auth/verify', {
+      const response = await axios.post('http://localhost:4000/api/auth/verify', {
         email,
         code: code.join(''),
       });
+
+      localStorage.setItem("token", response.data.accessToken);
+
+      
       navigate('/identification', { state: { email } });
     } catch (err) {
       console.error('Verification error:', err.response?.data || err.message);
